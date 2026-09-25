@@ -138,7 +138,7 @@ export class SpeechPlayer {
     utterance.voice = item.voice ?? null
     utterance.lang = item.voice?.lang ?? 'pt-BR'
     utterance.pitch = item.pitch
-    utterance.rate = this.rate
+    utterance.rate = this.rate * item.rate
     utterance.onend = () => {
       this.consecutiveErrors = 0
       this.advance(generation)

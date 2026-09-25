@@ -26,7 +26,7 @@ test('override do usuário vence a escolha automática', () => {
     ...context,
     overrides: { Orsted: { voiceURI: 'Microsoft Francisca', pitch: 1.4 } },
   })
-  expect(chosen).toEqual({ voice: voices[2], pitch: 1.4 })
+  expect(chosen).toEqual({ voice: voices[2], style: 'adulto', pitch: 1.4, rate: 1 })
 })
 
 test('frases longas viram pedaços curtos sem perder texto', () => {
@@ -52,4 +52,23 @@ test('tom automático fica sempre dentro da faixa do gênero', () => {
   const pitches = names.map((name) => characterVoice(name, 'male', context).pitch)
   expect(Math.min(...pitches)).toBeGreaterThanOrEqual(0.68)
   expect(Math.max(...pitches)).toBeLessThanOrEqual(0.92)
+})
+
+test('estilo muda tom e velocidade, e é inferido de substantivos como "velho"', () => {
+  const elder = characterVoice('Velho', 'male', context)
+  expect(elder.style).toBe('idoso')
+  expect(elder.rate).toBeLessThan(1)
+  expect(elder.pitch).toBeLessThan(
+    characterVoice('Velho', 'male', {
+      ...context,
+      overrides: { Velho: { style: 'adulto' } },
+    }).pitch,
+  )
+
+  const child = characterVoice('Aisha', 'female', {
+    ...context,
+    overrides: { Aisha: { style: 'crianca' } },
+  })
+  expect(child.pitch).toBeGreaterThan(1.5)
+  expect(child.rate).toBeGreaterThan(1)
 })

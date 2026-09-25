@@ -72,8 +72,12 @@ export function ChapterReader({
 
   const preview = (speaker: string) => {
     player.pause()
-    const { voice, pitch } = characterVoice(speaker, script.genders.get(speaker), voiceContext)
-    previewVoice(voice, pitch, settings.rate)
+    const { voice, pitch, rate } = characterVoice(
+      speaker,
+      script.genders.get(speaker),
+      voiceContext,
+    )
+    previewVoice(voice, pitch, settings.rate * rate)
   }
 
   return (
