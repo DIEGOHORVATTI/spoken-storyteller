@@ -33,6 +33,10 @@ export function ChapterText({
   const activeRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    activeRef.current?.scrollIntoView({ block: 'center' })
+  }, [])
+
+  useEffect(() => {
     if (followPlayback) activeRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }, [activeParagraph, followPlayback])
 

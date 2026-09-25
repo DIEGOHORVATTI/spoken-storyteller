@@ -28,7 +28,7 @@ export function useChapterPlayer({
   onFinished,
 }: UseChapterPlayerOptions) {
   const voices = useVoices()
-  const [player] = useState(() => new SpeechPlayer())
+  const [player] = useState(() => new SpeechPlayer(startParagraph))
   const state = useSyncExternalStore(player.subscribe, player.getSnapshot)
   const pendingStart = useRef<{ paragraph: number; autoplay: boolean } | null>({
     paragraph: startParagraph,

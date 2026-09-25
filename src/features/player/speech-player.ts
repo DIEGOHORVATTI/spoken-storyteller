@@ -21,7 +21,11 @@ export class SpeechPlayer {
   private consecutiveErrors = 0
   private current?: SpeechSynthesisUtterance
   private listeners = new Set<() => void>()
-  private state: PlayerState = { status: 'idle', paragraph: 0 }
+  private state: PlayerState
+
+  constructor(paragraph = 0) {
+    this.state = { status: 'idle', paragraph }
+  }
 
   onFinished?: () => void
 

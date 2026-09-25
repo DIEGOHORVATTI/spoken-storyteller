@@ -1,4 +1,4 @@
-import { useLocalStorage } from 'minimal-shared/hooks'
+import { useStoredState } from 'src/lib/use-stored-state'
 
 export type ReadingProgress = {
   novelSlug: string
@@ -10,7 +10,7 @@ export type ReadingProgress = {
 }
 
 export function useReadingProgress() {
-  const { state, setState } = useLocalStorage<Record<string, ReadingProgress>>(
+  const { state, setState } = useStoredState<Record<string, ReadingProgress>>(
     'reading-progress',
     {},
   )
