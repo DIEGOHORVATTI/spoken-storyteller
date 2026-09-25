@@ -14,6 +14,7 @@ import { PlayerBar } from './player-bar'
 import { characterVoice } from '../voices'
 import { ChapterText } from './chapter-text'
 import { previewVoice } from '../speech-player'
+import { ChapterNavigation } from './chapter-navigation'
 import { useChapterPlayer } from '../hooks/use-chapter-player'
 import { ReaderSettingsDialog } from './reader-settings-dialog'
 import { CharacterVoicesDialog } from './character-voices-dialog'
@@ -88,13 +89,29 @@ export function ChapterReader({
         </Alert>
       )}
 
-      <ChapterText
-        paragraphs={chapter.paragraphs}
-        lines={script.lines}
-        activeParagraph={state.paragraph}
-        followPlayback={isPlaying}
-        fontSize={settings.fontSize}
-        onSelectParagraph={(paragraph) => player.play(paragraph)}
+      <ChapterNavigation
+        novelTitle={novel.title}
+        previous={previous}
+        next={next}
+        onNavigate={(target) => goTo(target, isPlaying)}
+      />
+
+      <Box sx={{ my: 3 }}>
+        <ChapterText
+          paragraphs={chapter.paragraphs}
+          lines={script.lines}
+          activeParagraph={state.paragraph}
+          followPlayback={isPlaying}
+          fontSize={settings.fontSize}
+          onSelectParagraph={(paragraph) => player.play(paragraph)}
+        />
+      </Box>
+
+      <ChapterNavigation
+        novelTitle={novel.title}
+        previous={previous}
+        next={next}
+        onNavigate={(target) => goTo(target, isPlaying)}
       />
 
       <PlayerBar
