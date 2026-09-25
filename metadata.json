@@ -1,6 +1,0 @@
-{
-  "name": "Leitor de Crônicas - Audio Reader",
-  "description": "Leitor de áudio imersivo com narração em português, sincronização de texto, modo vozes de personagens e ambiência para contos e light novels.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
