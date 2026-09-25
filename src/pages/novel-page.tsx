@@ -10,6 +10,8 @@ import HeadphonesRoundedIcon from '@mui/icons-material/HeadphonesRounded'
 
 import { paths } from 'src/paths'
 import { chapterLabel } from 'src/features/catalog/utils'
+import { useFavorites } from 'src/features/library/use-favorites'
+import { FavoriteButton } from 'src/features/library/favorite-button'
 import { NovelCover } from 'src/features/catalog/components/novel-cover'
 import { ChapterList } from 'src/features/catalog/components/chapter-list'
 import { useNovel, useChapters } from 'src/features/catalog/hooks/use-catalog'
@@ -20,6 +22,7 @@ export function NovelPage() {
   const novel = useNovel(novelSlug)
   const chapters = useChapters(novel.data?.categoryId)
   const { progressByNovel } = useReadingProgress()
+  const { isFavorite, toggle } = useFavorites()
 
   if (novel.isError) return <Alert severity="error">{novel.error.message}</Alert>
   if (!novel.data) return <LinearProgress />
@@ -44,7 +47,15 @@ export function NovelPage() {
           sx={{ boxShadow: (theme) => theme.vars.customShadows.z16 }}
         />
         <Stack spacing={2} sx={{ minWidth: 0 }}>
-          <Typography variant="h4">{title}</Typography>
+          <Stack direction="row" alignItems="flex-start" spacing={1}>
+            <Typography variant="h4" sx={{ flexGrow: 1 }}>
+              {title}
+            </Typography>
+            <FavoriteButton
+              active={isFavorite(novelSlug)}
+              onToggle={() => toggle({ slug: novelSlug, title })}
+            />
+          </Stack>
           <Typography variant="body2" color="text.secondary">
             {chapterCount} capítulos
           </Typography>

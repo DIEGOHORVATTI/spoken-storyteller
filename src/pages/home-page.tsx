@@ -10,8 +10,11 @@ import CircularProgress from '@mui/material/CircularProgress'
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
 
 import { paths } from 'src/paths'
+import { chapterLabel } from 'src/features/catalog/utils'
+import { useFavorites } from 'src/features/library/use-favorites'
+import { NovelSection } from 'src/features/library/novel-section'
+import { FavoriteButton } from 'src/features/library/favorite-button'
 import { useNovelSearch } from 'src/features/catalog/hooks/use-catalog'
-import { ContinueReading } from 'src/features/library/continue-reading'
 import { useReadingProgress } from 'src/features/library/use-reading-progress'
 import { NovelListItem } from 'src/features/catalog/components/novel-list-item'
 
@@ -19,10 +22,22 @@ export function HomePage() {
   const [query, setQuery] = useState('')
   const debouncedQuery = useDebounce(query.trim(), 400)
   const search = useNovelSearch(debouncedQuery)
-  const { recent } = useReadingProgress()
+  const { recent, progressByNovel } = useReadingProgress()
+  const { favorites, isFavorite, toggle } = useFavorites()
 
   const isSearching = debouncedQuery.length >= 2
-  const results = search.data ?? []
+  const results = (search.data ?? []).toSorted(
+    (a, b) => Number(isFavorite(b.slug)) - Number(isFavorite(a.slug)),
+  )
+
+  const lastChapter = (slug: string, title: string) => {
+    const progress = progressByNovel[slug]
+    return progress && chapterLabel(progress.chapterTitle, title)
+  }
+
+  const favoriteAction = (slug: string, title: string) => (
+    <FavoriteButton active={isFavorite(slug)} onToggle={() => toggle({ slug, title })} />
+  )
 
   return (
     <Stack spacing={4}>
@@ -59,6 +74,7 @@ export function HomePage() {
               slug={novel.slug}
               title={novel.title}
               to={paths.novel(novel.slug)}
+              action={favoriteAction(novel.slug, novel.title)}
             />
           ))}
           {search.isSuccess && !results.length && (
@@ -67,7 +83,37 @@ export function HomePage() {
           {search.isError && <Typography color="error">{search.error.message}</Typography>}
         </List>
       ) : (
-        <ContinueReading items={recent} />
+        <>
+          {!!favorites.length && (
+            <NovelSection title="Favoritas">
+              {favorites.map((favorite) => (
+                <NovelListItem
+                  key={favorite.slug}
+                  slug={favorite.slug}
+                  title={favorite.title}
+                  to={paths.novel(favorite.slug)}
+                  secondary={lastChapter(favorite.slug, favorite.title)}
+                  action={favoriteAction(favorite.slug, favorite.title)}
+                />
+              ))}
+            </NovelSection>
+          )}
+
+          {!!recent.length && (
+            <NovelSection title="Continuar ouvindo">
+              {recent.map((item) => (
+                <NovelListItem
+                  key={item.novelSlug}
+                  slug={item.novelSlug}
+                  title={item.novelTitle}
+                  to={paths.chapter(item.novelSlug, item.chapterSlug)}
+                  secondary={chapterLabel(item.chapterTitle, item.novelTitle)}
+                  action={favoriteAction(item.novelSlug, item.novelTitle)}
+                />
+              ))}
+            </NovelSection>
+          )}
+        </>
       )}
     </Stack>
   )
