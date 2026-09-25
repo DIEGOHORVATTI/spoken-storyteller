@@ -1,5 +1,8 @@
-import MenuItem from '@mui/material/MenuItem'
-import TextField from '@mui/material/TextField'
+import type { SelectOption } from 'src/components/select-autocomplete'
+
+import { SelectAutocomplete } from 'src/components/select-autocomplete'
+
+import { isPortuguese } from '../voices'
 
 type VoiceSelectProps = {
   label: string
@@ -10,21 +13,22 @@ type VoiceSelectProps = {
 }
 
 export function VoiceSelect({ label, value, voices, emptyLabel, onChange }: VoiceSelectProps) {
+  const options: SelectOption<string>[] = [
+    ...(emptyLabel ? [{ value: '', label: emptyLabel }] : []),
+    ...voices.map((voice) => ({
+      value: voice.voiceURI,
+      label: `${voice.name} (${voice.lang})`,
+      group: isPortuguese(voice) ? 'Português' : 'Outros idiomas',
+    })),
+  ]
+
   return (
-    <TextField
-      select
-      fullWidth
-      size="small"
+    <SelectAutocomplete
       label={label}
       value={value}
-      onChange={(event) => onChange(event.target.value)}
-    >
-      {emptyLabel && <MenuItem value="">{emptyLabel}</MenuItem>}
-      {voices.map((voice) => (
-        <MenuItem key={voice.voiceURI} value={voice.voiceURI}>
-          {voice.name} ({voice.lang})
-        </MenuItem>
-      ))}
-    </TextField>
+      options={options}
+      onChange={onChange}
+      sx={{ flex: 1, minWidth: 0 }}
+    />
   )
 }

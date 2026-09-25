@@ -29,8 +29,6 @@ type ChapterReaderProps = {
   onChangeSettings: (patch: Partial<ReaderSettings>) => void
 }
 
-const RATES = [0.8, 1, 1.2, 1.5, 1.75, 2]
-
 export function ChapterReader({
   novel,
   chapter,
@@ -72,11 +70,6 @@ export function ChapterReader({
 
   const isPlaying = state.status === 'playing'
 
-  const cycleRate = () => {
-    const nextRate = RATES.find((rate) => rate > settings.rate + 0.01) ?? RATES[0]
-    onChangeSettings({ rate: nextRate })
-  }
-
   const preview = (speaker: string) => {
     player.pause()
     const { voice, pitch } = characterVoice(speaker, script.genders.get(speaker), voiceContext)
@@ -104,7 +97,7 @@ export function ChapterReader({
         state={state}
         totalParagraphs={chapter.paragraphs.length}
         rate={settings.rate}
-        onCycleRate={cycleRate}
+        onChangeRate={(rate) => onChangeSettings({ rate })}
         hasPrevious={!!previous}
         hasNext={!!next}
         onToggle={() => player.toggle()}

@@ -2,11 +2,9 @@ import type { PlayerState } from '../speech-player'
 
 import { useEffect } from 'react'
 
-import Box from '@mui/material/Box'
 import Fab from '@mui/material/Fab'
 import Paper from '@mui/material/Paper'
 import Stack from '@mui/material/Stack'
-import Button from '@mui/material/Button'
 import Slider from '@mui/material/Slider'
 import Tooltip from '@mui/material/Tooltip'
 import Container from '@mui/material/Container'
@@ -21,11 +19,15 @@ import FastForwardRoundedIcon from '@mui/icons-material/FastForwardRounded'
 import SkipPreviousRoundedIcon from '@mui/icons-material/SkipPreviousRounded'
 import RecordVoiceOverRoundedIcon from '@mui/icons-material/RecordVoiceOverRounded'
 
+import { SelectAutocomplete } from 'src/components/select-autocomplete'
+
+import { RATE_OPTIONS } from '../hooks/use-reader-settings'
+
 type PlayerBarProps = {
   state: PlayerState
   totalParagraphs: number
   rate: number
-  onCycleRate: () => void
+  onChangeRate: (rate: number) => void
   hasPrevious: boolean
   hasNext: boolean
   onToggle: () => void
@@ -65,7 +67,7 @@ export function PlayerBar({
   state,
   totalParagraphs,
   rate,
-  onCycleRate,
+  onChangeRate,
   hasPrevious,
   hasNext,
   onToggle,
@@ -109,13 +111,12 @@ export function PlayerBar({
         </Stack>
 
         <Stack direction="row" alignItems="center" justifyContent="space-between">
-          <Box sx={{ width: 96 }}>
-            <Tooltip title="Velocidade">
-              <Button color="inherit" size="small" onClick={onCycleRate}>
-                {rate.toFixed(2).replace(/0$/, '')}x
-              </Button>
-            </Tooltip>
-          </Box>
+          <SelectAutocomplete
+            value={rate}
+            options={RATE_OPTIONS}
+            onChange={onChangeRate}
+            sx={{ width: 110 }}
+          />
 
           <Stack direction="row" alignItems="center" spacing={0.5}>
             <Tooltip title="Capítulo anterior">
@@ -152,7 +153,7 @@ export function PlayerBar({
             </Tooltip>
           </Stack>
 
-          <Stack direction="row" justifyContent="flex-end" sx={{ width: 96 }}>
+          <Stack direction="row" justifyContent="flex-end" sx={{ width: 110 }}>
             <Tooltip title="Vozes dos personagens">
               <IconButton onClick={onOpenVoices}>
                 <RecordVoiceOverRoundedIcon />

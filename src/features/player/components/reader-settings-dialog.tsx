@@ -9,8 +9,11 @@ import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
 import FormControlLabel from '@mui/material/FormControlLabel'
 
+import { SelectAutocomplete } from 'src/components/select-autocomplete'
+
 import { VoiceSelect } from './voice-select'
 import { defaultNarratorVoice } from '../voices'
+import { RATE_OPTIONS } from '../hooks/use-reader-settings'
 
 type ReaderSettingsDialogProps = {
   open: boolean
@@ -41,16 +44,12 @@ export function ReaderSettingsDialog({
             onChange={(voiceURI) => onChange({ narratorVoiceURI: voiceURI })}
           />
 
-          <div>
-            <Typography variant="subtitle2">Velocidade: {settings.rate.toFixed(2)}x</Typography>
-            <Slider
-              value={settings.rate}
-              min={0.5}
-              max={2.5}
-              step={0.05}
-              onChange={(_, rate) => onChange({ rate: rate as number })}
-            />
-          </div>
+          <SelectAutocomplete
+            label="Velocidade"
+            value={settings.rate}
+            options={RATE_OPTIONS}
+            onChange={(rate) => onChange({ rate })}
+          />
 
           <div>
             <Typography variant="subtitle2">Tamanho do texto: {settings.fontSize}px</Typography>
